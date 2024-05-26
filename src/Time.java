@@ -10,23 +10,20 @@ public class Time{
 	JButton resetButton = new JButton("RESET");
 	JButton startButton = new JButton("START");
 	int default_minutes_pomodoro = 25;
-	int default_minutes_rest = 5;
+	int default_minutes_rest = 0;
 	int seconds = 0;
 	int minutes = default_minutes_pomodoro;
 	boolean started = false;
 	String seconds_string = String.format("%02d", seconds);
 	String minutes_string = String.format("%02d", minutes);
-	String rest_seconds_string = String.format("%02d", seconds);
-	String rest_minutes_string = String.format("%02d", minutes);
 	
 	Timer rest_timer = new Timer(1000, new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if(seconds <= 0 && minutes <= 0) {
-				seconds = 0;
-				minutes = 0;
 				started = false;
 				stop();
+				return;
 			}
 			else if(seconds == 0) {
 				seconds = 60;
@@ -70,10 +67,12 @@ public class Time{
 	
 	public void start() {
 		timer.start();
+		started = true;
 	}
 	
 	public void stop() {
 		timer.stop();
+		started = false;
 	}
 	
 	public void reset(String pomodoro_rest) {

@@ -2,23 +2,27 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-
+import java.util.ArrayList;
 import javax.sound.sampled.*;
 
 public class Audio {
 	
 	float volume = 0.8f;
 	String path = "Sounds/Danger.wav";
+	ArrayList<String> sounds;
+	int selectedAudio = 1;
+	
 	
 	public Audio() {
-		
+		sounds = new ArrayList<String>();
+		sounds.add("Sounds/Danger.wav");
+		sounds.add("Sounds/DingDong.wav");
 	}
 	
 	public void Play() {
-        try (InputStream audioSrc = getClass().getResourceAsStream(path);
+        try (InputStream audioSrc = getClass().getResourceAsStream(sounds.get(1));
              InputStream bufferedIn = new BufferedInputStream(audioSrc)) {
             if (bufferedIn == null) {
-                System.err.println("Could not find the audio file: " + path);
                 return;
             }
             AudioInputStream audioStream = AudioSystem.getAudioInputStream(bufferedIn);
