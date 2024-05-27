@@ -10,12 +10,13 @@ public class Time{
 	JButton resetButton = new JButton("RESET");
 	JButton startButton = new JButton("START");
 	int default_minutes_pomodoro = 25;
-	int default_minutes_rest = 0;
+	int default_minutes_rest = 5;
 	int seconds = 0;
 	int minutes = default_minutes_pomodoro;
 	boolean started = false;
 	String seconds_string = String.format("%02d", seconds);
 	String minutes_string = String.format("%02d", minutes);
+	int selectedAudio = 0;
 	
 	Timer rest_timer = new Timer(1000, new ActionListener() {
 		@Override
@@ -46,7 +47,7 @@ public class Time{
 				minutes = 0;
 				started = false;
 				stop();
-				audio.Play();
+				playAlarm();
 			}
 			else if(seconds == 0) {
 				seconds = 60;
@@ -73,6 +74,10 @@ public class Time{
 	public void stop() {
 		timer.stop();
 		started = false;
+	}
+	
+	public void playAlarm() {
+		audio.Play(selectedAudio);
 	}
 	
 	public void reset(String pomodoro_rest) {

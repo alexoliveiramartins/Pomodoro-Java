@@ -10,7 +10,7 @@ public class Audio {
 	float volume = 0.8f;
 	String path = "Sounds/Danger.wav";
 	ArrayList<String> sounds;
-	int selectedAudio = 1;
+	int selectedAudio = 0;
 	
 	
 	public Audio() {
@@ -19,8 +19,8 @@ public class Audio {
 		sounds.add("Sounds/DingDong.wav");
 	}
 	
-	public void Play() {
-        try (InputStream audioSrc = getClass().getResourceAsStream(sounds.get(1));
+	public void Play(int selectedIndex) {
+        try (InputStream audioSrc = getClass().getResourceAsStream(sounds.get(selectedIndex));
              InputStream bufferedIn = new BufferedInputStream(audioSrc)) {
             if (bufferedIn == null) {
                 return;
