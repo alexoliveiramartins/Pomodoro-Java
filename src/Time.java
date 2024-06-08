@@ -16,7 +16,6 @@ public class Time{
 	boolean started = false;
 	String seconds_string = String.format("%02d", seconds);
 	String minutes_string = String.format("%02d", minutes);
-	int selectedAudio = 0;
 	
 	Timer rest_timer = new Timer(1000, new ActionListener() {
 		@Override
@@ -77,7 +76,7 @@ public class Time{
 	}
 	
 	public void playAlarm() {
-		audio.Play(selectedAudio);
+		audio.Play();
 	}
 	
 	public void reset(String pomodoro_rest) {

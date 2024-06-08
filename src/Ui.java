@@ -19,6 +19,7 @@ public class Ui {
     Style style = new Style();
     Counter counter = new Counter();
     Files files = new Files();
+    private Audio audio;
 
     public JFrame frame = new JFrame();
     public JLabel timeLabel = new JLabel();
@@ -43,8 +44,12 @@ public class Ui {
     JLabel alarmText = new JLabel("Alarm Sound");
     JLabel BgImageText = new JLabel("Background Image");
     JLabel alarmVolumeText = new JLabel("Alarm Volume");
-
+    JSpinner spinnerVolume = new JSpinner();
+    private final JLabel bgImageLabel = new JLabel();
+    
+    
     public Ui() {
+    	audio = new Audio();
         timer = new Time(timeLabel);
         restTimer = new Time(rest_timeLabel);
 
@@ -65,9 +70,11 @@ public class Ui {
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(500, 500);
+        frame.setLocationRelativeTo(null);
         frame.getContentPane().setLayout(null);
 
         count = new JTextField();
+        count.setEnabled(false);
         count.setEditable(false);
         count.setFont(new Font("Lucida Console", Font.PLAIN, 18));
         count.setText(String.valueOf(counter.pomodoro_count));
@@ -148,17 +155,20 @@ public class Ui {
         style.DefaultModeButtonStyle(pomodoroBtn);
         pomodoroBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                pomodoro_mode = true;
+            	pomodoro_mode = true;
+            	frame.getContentPane().remove(rest_timeLabel);
+            	frame.getContentPane().add(timeLabel);
+            	
+            	frame.getContentPane().add(bgImageLabel);
                 pomodoroBtn.setEnabled(false);
-                restBtn.setEnabled(true);
-                frame.getContentPane().remove(rest_timeLabel);
-                frame.getContentPane().add(timeLabel);
-
+                restBtn.setEnabled(true);                               
                 timer.reset("pomodoro");
-                timeLabel.setText(timer.minutes_string + ":" + timer.seconds_string);
-                timer.start();
+                timeLabel.setText(timer.minutes_string + ":" + timer.seconds_string);               
                 startButton.setText("STOP");
 
+                
+                timer.start();
+                
                 frame.revalidate();
                 frame.repaint();
             }
@@ -171,15 +181,19 @@ public class Ui {
             public void actionPerformed(ActionEvent e) {
                 pomodoro_mode = false;
                 restBtn.setEnabled(false);
-                pomodoroBtn.setEnabled(true);
+                pomodoroBtn.setEnabled(true);   
                 frame.getContentPane().remove(timeLabel);
                 frame.getContentPane().add(rest_timeLabel);
+                frame.getContentPane().add(bgImageLabel);
 
                 restTimer.reset("rest");
                 rest_timeLabel.setText(restTimer.minutes_string + ":" + restTimer.seconds_string);
-                restTimer.start();
                 startButton.setText("STOP");
-
+                
+                
+                restTimer.start();
+                
+                
                 frame.revalidate();
                 frame.repaint();
             }
@@ -209,10 +223,7 @@ public class Ui {
         // BG IMAGE TEXTO
         BgImageText.setBounds(39, 326, 113, 26);
         // VOLUME ALARME TEXTO
-        alarmVolumeText.setBounds(39, 274, 113, 26);
-
-        // SLIDER VOLUME
-        sliderVolume.setBounds(173, 272, 200, 26);
+        alarmVolumeText.setBounds(39, 274, 113, 26);              
 
         // SPINNER POMODORO MINUTOS
         spinnerPomodoro.setBounds(173, 116, 47, 26);
@@ -223,7 +234,7 @@ public class Ui {
 			public void stateChanged(ChangeEvent e) {
 				timer.default_minutes_pomodoro = (int) spinnerPomodoro.getValue();
 				spinnerPomodoro.setValue(timer.default_minutes_pomodoro);
-				System.out.println(timer.default_minutes_pomodoro + "\n");
+				// System.out.println(timer.default_minutes_pomodoro + "\n");
 			}
 
         });
@@ -237,66 +248,114 @@ public class Ui {
 			public void stateChanged(ChangeEvent e) {
 				restTimer.default_minutes_rest = (int) spinnerRest.getValue();
 				spinnerRest.setValue(restTimer.default_minutes_rest);
-				System.out.println(restTimer.default_minutes_rest + "\n");
+				// System.out.println(restTimer.default_minutes_rest + "\n");
 			}
 
         });
         
-        // SOUNDS E IMAGENS COMBOBOX
-        files.addImagesComboBox(comboBoxBgImage);
-        comboBoxBgImage.setBounds(173, 326, 200, 26);
-
+        // SOUNDS COMBOBOX
         files.addSoundsComboBox(comboBoxAlarm);
         comboBoxAlarm.setBounds(173, 220, 200, 26);
         comboBoxAlarm.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String selecao = comboBoxAlarm.getSelectedItem().toString();
-                timer.selectedAudio = comboBoxAlarm.getSelectedIndex();
-                restTimer.selectedAudio = comboBoxAlarm.getSelectedIndex();
+                // String selecao = comboBoxAlarm.getSelectedItem().toString();
+                setAudio(comboBoxAlarm.getSelectedIndex());
             }
         });
 
         // COMBO BOX IMAGENS BG
+        files.addImagesComboBox(comboBoxBgImage);
+        comboBoxBgImage.setBounds(173, 326, 200, 26);
         comboBoxBgImage.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String selecao = comboBoxBgImage.getSelectedItem().toString();
-                System.out.println(selecao + "\n");
-                
+                ImageIcon bgIcon = new ImageIcon("src/BgImages/" + selecao);   	  	
+            	bgImageLabel.setIcon(bgIcon);                
             }
         });
         
+        // SLIDER VOLUME
+        sliderVolume.setBounds(173, 272, 200, 26);
+        sliderVolume.setValue(audio.volume);
+        System.out.println((audio.volume) + " audiovolume");
+        sliderVolume.addChangeListener(new ChangeListener() {
+
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				int volume;
+				volume = sliderVolume.getValue();
+				setVolume(volume);
+				spinnerVolume.setValue((int) volume);
+			}
+        });
+        
+        // SPINNER VOLUME
+        spinnerVolume.setValue(audio.volume);
+        spinnerVolume.setBounds(385, 274, 47, 23);
+        spinnerVolume.addChangeListener(new ChangeListener() {
+
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				int volume = (int) spinnerVolume.getValue();
+				setVolume(volume);          
+                sliderVolume.setValue(volume);
+			}
+        });
+        
+        // BOTAO TESTAR AUDIO
         testSoundBtn.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		timer.playAlarm();
+        		audio.Play();
         	}
         });
         testSoundBtn.setBounds(385, 220, 28, 26);
 
-        pomodoroPage();
+        settingsPage();
     }
 
-    public void pomodoroPage() {
-        settings_mode = false;
+    public void setVolume(int v) {
+    	timer.audio.volume = v;
+    	restTimer.audio.volume = v;
+    	audio.volume = v;
+    }
+    
+    public void setAudio(int a) {
+    	 audio.selectedAudio = a;
+         timer.audio.selectedAudio = a;
+         restTimer.audio.selectedAudio = a;
+    }
+    
+    public void setBg(String file) {
+    	ImageIcon bgIcon = new ImageIcon("src/BgImages/" + file);   	  	
+    	bgImageLabel.setIcon(bgIcon);   	
+    }
+    
+    public void pomodoroPage() {    	
+        settings_mode = false;        
         frame.getContentPane().removeAll();
-        frame.getContentPane().add(startButton);
-        frame.getContentPane().add(resetButton);
-        timer.reset("pomodoro");
-        restTimer.reset("rest");
+        
         frame.getContentPane().add(timeLabel);
+        frame.getContentPane().add(rest_timeLabel);
+        timer.reset("pomodoro");
+        restTimer.reset("rest"); 
+        
+        frame.getContentPane().add(startButton);
+        frame.getContentPane().add(resetButton);               
         frame.getContentPane().add(count);
         frame.getContentPane().add(plusButton);
         frame.getContentPane().add(subButton);
         frame.getContentPane().add(restBtn);
         frame.getContentPane().add(pomodoroBtn);
         frame.getContentPane().add(settingsBtn);
+        
         settingsBtn.setText("SETTINGS");
         pomodoroBtn.setEnabled(false);
         restBtn.setEnabled(true);
-        
         frame.revalidate();
         frame.repaint();
+        frame.getContentPane().add(bgImageLabel);
         frame.setVisible(true);
     }
 
@@ -304,9 +363,7 @@ public class Ui {
         settings_mode = true;
         frame.getContentPane().removeAll();
         frame.getContentPane().add(settingsBtn);
-
-        settingsBtn.setText("BACK");
-
+        settingsBtn.setText("BACK");        
         frame.getContentPane().add(comboBoxBgImage);
         frame.getContentPane().add(pomodoroText);
         frame.getContentPane().add(restText);
@@ -318,9 +375,14 @@ public class Ui {
         frame.getContentPane().add(spinnerRest);
         frame.getContentPane().add(comboBoxAlarm);        
         frame.getContentPane().add(testSoundBtn);
+        frame.getContentPane().add(spinnerVolume);        
+        bgImageLabel.setBounds(0, 0, 484, 461);
+        
+        
         pomodoroBtn.setEnabled(true);
         restBtn.setEnabled(false);
         
+        frame.getContentPane().add(bgImageLabel);
 
         frame.revalidate();
         frame.repaint();

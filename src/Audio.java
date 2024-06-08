@@ -7,25 +7,42 @@ import javax.sound.sampled.*;
 
 public class Audio {
 	
-	float volume = 0.8f;
-	String path = "Sounds/Danger.wav";
-	ArrayList<String> sounds;
+	int volume = 75;
+	String path = "src/Sounds";
+	File pasta = new File(path);
+	ArrayList<String> sounds = new ArrayList<>();
 	int selectedAudio = 0;
 	
 	
 	public Audio() {
-		sounds = new ArrayList<String>();
-		sounds.add("Sounds/Danger.wav");
-		sounds.add("Sounds/DingDong.wav");
+		if (pasta.isDirectory()) {
+            String[] soundFiles = pasta.list();
+            if (soundFiles != null) {
+                for (String soundFile : soundFiles) {
+                    sounds.add(path + "/" + soundFile);
+                    System.out.println(soundFile);
+                }
+            } else {
+                System.out.println("A pasta está vazia ou não pôde ser lida.");
+            }
+        } else {
+            System.out.println("O caminho especificado não é uma pasta.");
+        }
 	}
-	
-	public void Play(int selectedIndex) {
-        try (InputStream audioSrc = getClass().getResourceAsStream(sounds.get(selectedIndex));
-             InputStream bufferedIn = new BufferedInputStream(audioSrc)) {
-            if (bufferedIn == null) {
+		
+	public void Play() {
+        if (selectedAudio < 0 || selectedAudio >= sounds.size()) {
+            System.out.println("Índice inválido.");
+            return;
+        }
+
+        try {
+            File audioFile = new File(sounds.get(selectedAudio));
+            if (!audioFile.exists()) {
+                System.out.println("Arquivo de áudio não encontrado.");
                 return;
             }
-            AudioInputStream audioStream = AudioSystem.getAudioInputStream(bufferedIn);
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
             Clip clip = AudioSystem.getClip();
             clip.open(audioStream);
             setVolume(clip, volume);
@@ -35,12 +52,13 @@ public class Audio {
         }
     }
 	
-	private void setVolume(Clip clip, float volume) {
+	private void setVolume(Clip clip, int volume) {
         FloatControl volumeControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
         float min = volumeControl.getMinimum();
         float max = volumeControl.getMaximum();
-        float range = max - min;
-        float gain = min + (range * volume);
+        
+        // Convert volume percentage (0-100) to the FloatControl range
+        float gain = min + ((max - min) * (volume / 100.0f));
         volumeControl.setValue(gain);
     }
 }
