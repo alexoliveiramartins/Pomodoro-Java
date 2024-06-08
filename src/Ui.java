@@ -54,18 +54,19 @@ public class Ui {
         restTimer = new Time(rest_timeLabel);
 
         timeLabel.setText(timer.minutes_string + ":" + timer.seconds_string);
-        timeLabel.setBounds(148, 124, 200, 100);
+        timeLabel.setBounds(148, 144, 200, 100);
         timeLabel.setFont(new Font("Lucida Sans Unicode", Font.PLAIN, 45));
         timeLabel.setBorder(BorderFactory.createBevelBorder(1));
         timeLabel.setOpaque(true);
         timeLabel.setHorizontalAlignment(JTextField.CENTER);
 
         rest_timeLabel.setText(restTimer.minutes_string + ":" + restTimer.seconds_string);
-        rest_timeLabel.setBounds(148, 124, 200, 100);
+        rest_timeLabel.setBounds(148, 144, 200, 100);
         rest_timeLabel.setFont(new Font("Lucida Sans Unicode", Font.PLAIN, 45));
         rest_timeLabel.setBorder(BorderFactory.createBevelBorder(1));
         rest_timeLabel.setOpaque(true);
         rest_timeLabel.setHorizontalAlignment(JTextField.CENTER);
+        frame.setLocation(0, -49);
 
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -78,12 +79,12 @@ public class Ui {
         count.setEditable(false);
         count.setFont(new Font("Lucida Console", Font.PLAIN, 18));
         count.setText(String.valueOf(counter.pomodoro_count));
-        count.setBounds(230, 303, 39, 20);
+        count.setBounds(230, 323, 39, 20);
         count.setColumns(10);
         count.setHorizontalAlignment(JTextField.CENTER);
 
         // START BUTTON
-        startButton.setBounds(148, 235, 88, 50);
+        startButton.setBounds(148, 255, 88, 50);
         style.DefaultButtonStyle(startButton);
         startButton.addActionListener(new ActionListener() {
             @Override
@@ -113,7 +114,7 @@ public class Ui {
         });
 
         // RESET BUTTON
-        resetButton.setBounds(260, 235, 88, 50);
+        resetButton.setBounds(260, 255, 88, 50);
         style.DefaultButtonStyle(resetButton);
         resetButton.addActionListener(new ActionListener() {
             @Override
@@ -138,11 +139,11 @@ public class Ui {
                 count.setText(String.valueOf(counter.pomodoro_count));
             }
         });
-        plusButton.setBounds(277, 296, 44, 34);
+        plusButton.setBounds(277, 316, 44, 34);
 
         // - BUTTON
         style.DefaultButtonStyle(subButton);
-        subButton.setBounds(176, 296, 44, 34);
+        subButton.setBounds(176, 316, 44, 34);
         subButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (counter.pomodoro_count > 0) counter.pomodoro_count--;
@@ -151,7 +152,7 @@ public class Ui {
         });
 
         // MODO POMODORO <---------
-        pomodoroBtn.setBounds(148, 90, 89, 23);
+        pomodoroBtn.setBounds(148, 110, 89, 23);
         style.DefaultModeButtonStyle(pomodoroBtn);
         pomodoroBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -175,7 +176,7 @@ public class Ui {
         });
 
         // MODO REST <---------
-        restBtn.setBounds(259, 90, 89, 23);
+        restBtn.setBounds(259, 110, 89, 23);
         style.DefaultModeButtonStyle(restBtn);
         restBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -355,6 +356,7 @@ public class Ui {
         restBtn.setEnabled(true);
         frame.revalidate();
         frame.repaint();
+        bgImageLabel.setLocation(0, 0);
         frame.getContentPane().add(bgImageLabel);
         frame.setVisible(true);
     }
