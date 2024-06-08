@@ -312,7 +312,7 @@ public class Ui {
         });
         testSoundBtn.setBounds(385, 220, 28, 26);
 
-        settingsPage();
+        pomodoroPage();
     }
 
     public void setVolume(int v) {
