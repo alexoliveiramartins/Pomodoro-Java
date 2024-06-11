@@ -75,7 +75,7 @@ public class Ui {
         frame.getContentPane().setLayout(null);
 
         count = new JTextField();
-        count.setEnabled(false);
+        count.setEnabled(true);
         count.setEditable(false);
         count.setFont(new Font("Lucida Console", Font.PLAIN, 18));
         count.setText(String.valueOf(counter.pomodoro_count));
@@ -235,9 +235,11 @@ public class Ui {
 			public void stateChanged(ChangeEvent e) {
 				timer.default_minutes_pomodoro = (int) spinnerPomodoro.getValue();
 				spinnerPomodoro.setValue(timer.default_minutes_pomodoro);
+				timer.reset("pomodoro");
+				frame.revalidate();
+		        frame.repaint();
 				// System.out.println(timer.default_minutes_pomodoro + "\n");
 			}
-
         });
 
         // SPINNER REST MINUTOS
@@ -249,6 +251,9 @@ public class Ui {
 			public void stateChanged(ChangeEvent e) {
 				restTimer.default_minutes_rest = (int) spinnerRest.getValue();
 				spinnerRest.setValue(restTimer.default_minutes_rest);
+		        restTimer.reset("rest"); 
+		        frame.revalidate();
+		        frame.repaint();
 				// System.out.println(restTimer.default_minutes_rest + "\n");
 			}
 
@@ -334,13 +339,21 @@ public class Ui {
     }
     
     public void pomodoroPage() {    	
-        settings_mode = false;        
+        settings_mode = false; 
         frame.getContentPane().removeAll();
         
-        frame.getContentPane().add(timeLabel);
-        frame.getContentPane().add(rest_timeLabel);
-        timer.reset("pomodoro");
-        restTimer.reset("rest"); 
+        if(pomodoro_mode == true) {
+        	frame.getContentPane().add(timeLabel);  	
+        	pomodoroBtn.setEnabled(false);
+        	restBtn.setEnabled(true);
+        }
+        else if(pomodoro_mode == false){
+        	frame.getContentPane().add(rest_timeLabel);
+        	pomodoroBtn.setEnabled(true);
+        	restBtn.setEnabled(false);
+        }
+        // timer.reset("pomodoro");
+        // restTimer.reset("rest"); 
         
         frame.getContentPane().add(startButton);
         frame.getContentPane().add(resetButton);               
@@ -352,8 +365,7 @@ public class Ui {
         frame.getContentPane().add(settingsBtn);
         
         settingsBtn.setText("SETTINGS");
-        pomodoroBtn.setEnabled(false);
-        restBtn.setEnabled(true);
+  
         frame.revalidate();
         frame.repaint();
         bgImageLabel.setLocation(0, 0);
