@@ -162,11 +162,11 @@ public class Ui {
             	
             	frame.getContentPane().add(bgImageLabel);
                 pomodoroBtn.setEnabled(false);
-                restBtn.setEnabled(true);                               
+                restBtn.setEnabled(true);
+                restTimer.reset("rest");
                 timer.reset("pomodoro");
                 timeLabel.setText(timer.minutes_string + ":" + timer.seconds_string);               
                 startButton.setText("STOP");
-
                 
                 timer.start();
                 
@@ -188,12 +188,11 @@ public class Ui {
                 frame.getContentPane().add(bgImageLabel);
 
                 restTimer.reset("rest");
+                timer.reset("pomodoro");
                 rest_timeLabel.setText(restTimer.minutes_string + ":" + restTimer.seconds_string);
                 startButton.setText("STOP");
-                
-                
+
                 restTimer.start();
-                
                 
                 frame.revalidate();
                 frame.repaint();
